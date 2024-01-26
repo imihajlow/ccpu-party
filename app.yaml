@@ -1,0 +1,23 @@
+- name: init
+  begin: 0x0000
+  init: Yes
+
+- name: text
+  init: Yes
+
+- name: rodata
+  init: Yes
+
+- name: data
+  init: Yes
+
+- name: bss
+  init: No
+
+- name: bss_hi
+  init: No
+  min-begin: 0x8000
+
+- name: sys_bss
+  begin: 0xB000
+  init: No
