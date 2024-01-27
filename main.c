@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include <libsys/vga.h>
 
 #define COLOR_FIRE  224
@@ -9,6 +10,16 @@
 const uint8_t vpixels_rows = 2 * VGA_ROWS;
 const uint8_t vpixels_size = vpixels_rows * VGA_COLS;
 uint8_t vpixels[2 * VGA_COLS * VGA_ROWS];
+
+void step(void) {
+    int i = 0;
+    for (; i != 2 * VGA_COLS * (VGA_ROWS - 1); i++) {
+        VPIXELS[i] = (VPIXELS[i + VGA_COLS] + VPIXELS[i + VGA_COLS - 1] + VPIXELS[i + VGA_COLS + 1]) / 3;
+    }
+    for (; i != 2 * VGA_COLS * VGA_ROWS; i++) {
+        VPIXELS[i] = rand();
+    }
+}
 
 void    vpixels_render(void)
 {
