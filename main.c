@@ -13,8 +13,14 @@ uint8_t vpixels[2 * VGA_COLS * VGA_ROWS];
 
 void step(void) {
     int i = 0;
+    uint16_t sum = vpixels[VGA_COLS] + vpixels[VGA_COLS - 1]; // sum of middle and right from last iteration
     for (; i != 2 * VGA_COLS * (VGA_ROWS - 1); i++) {
-        vpixels[i] = (vpixels[i + VGA_COLS] + vpixels[i + VGA_COLS - 1] + vpixels[i + VGA_COLS + 1]) / 3;
+        const uint8_t right = vpixels[i + VGA_COLS + 1];
+        const uint8_t down = vpixels[i + VGA_COLS + VGA_COLS];
+        const uint8_t left = vpixels[i + VGA_COLS - 1];
+        sum += right;
+        vpixels[i] = (sum + down) / 4 - 1;
+        sum -= left;
     }
     for (; i != 2 * VGA_COLS * VGA_ROWS; i++) {
         vpixels[i] = rand();
@@ -43,7 +49,7 @@ void    vpixels_render(void)
 
 void main(void) {
     vga_clear(COLOR(COLOR_RED, COLOR_WHITE));
-    memset(vpixels, 0, vpixels_size);
+    memset(vpixels, 1, vpixels_size);
     vpixels_render();
     while (1)
     {
