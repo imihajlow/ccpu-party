@@ -23,19 +23,21 @@ void step(void) {
 
 void    vpixels_render(void)
 {
-    uint8_t *pixel = vpixels;
+    uint8_t *vpixel = vpixels;
+    const int pixel_offset = VGA_OFFSET(0,1) - VGA_OFFSET(VGA_COLS,0);
+    uint8_t *pixel = VGA_CHAR_SEG;
     for (int row = 0; row < vpixels_rows; row += 2)
     {
         for (int col = 0; col < VGA_COLS; col++)
         {
-            // divide by 32 because divide by 2 to get average of 2 cells
-            // and divide by 16 to map the range of 0-255 to range of 0-15
-            const uint8_t upper_color = *pixel >> 6;
-            const uint8_t lower_color = ((*(pixel + VGA_COLS) >> 4) & 0b11111100);
-            VGA_CHAR_SEG[VGA_OFFSET(col, row/2)] = upper_color + lower_color + COLOR_FIRE; 
+            const uint8_t upper_color = *vpixel >> 6;
+            const uint8_t lower_color = ((*(vpixel + VGA_COLS) >> 4) & 0b11111100);
+            *pixel = upper_color + lower_color + COLOR_FIRE; 
+            vpixel++;
             pixel++;
         }
-        pixel += VGA_COLS;
+        vpixel += VGA_COLS;
+        pixel += pixel_offset;
     }
 }
 
